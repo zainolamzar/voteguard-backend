@@ -1,7 +1,14 @@
 require('dotenv').config();
-
 const express = require('express');
+const userRoutes = require('./routes/userRoutes');
+
 const app = express();
+
+// Middleware
+app.use(express.json()); // Parse JSON requests
+
+// Routes
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
