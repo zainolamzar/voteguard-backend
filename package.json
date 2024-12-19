@@ -17,7 +17,9 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mysql2": "^3.11.5",
-    "sequelize": "^6.37.5"
+    "qrcode": "^1.5.4",
+    "sequelize": "^6.37.5",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

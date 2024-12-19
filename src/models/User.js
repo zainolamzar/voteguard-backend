@@ -48,6 +48,12 @@ const User = {
     const query = 'DELETE FROM user WHERE user_id = ?';
     return db.query(query, [userId]).then(([result]) => result.affectedRows > 0);
   },
+
+  // Update the OTP secret for a user
+  updateOtpSecret: async (userId, otpSecret) => {
+    const query = "UPDATE user SET otp_secret = ? WHERE user_id = ?";
+    return db.query(query, [otpSecret, userId]).then(([result]) => result.affectedRows > 0);
+  },
 };
 
 module.exports = User;
