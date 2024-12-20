@@ -1,8 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+
 const userRoutes = require('./src/routes/userRoutes');
-const db = require('./src/config/db');
+const electionRoutes = require('./src/routes/electionRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -14,15 +15,16 @@ app.use(cors()); // Enable CORS for all origins
 app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes); // Mount user routes at /api/users
+app.use('/api/users', userRoutes);
+app.use('/api/elections', electionRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.send('Voteguard Backend is running...');
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
