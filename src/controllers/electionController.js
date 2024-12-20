@@ -17,20 +17,34 @@ const ElectionController = {
   // Get an election by ID (with ownership check)
   getElectionById: async (req, res) => {
     const { userId, electionId } = req.params;
-
+  
     try {
+      // Fetch the election by ID including all relevant data
       const election = await Election.getElectionById(electionId);
-
+      
+      // Check if the election exists and belongs to the user
       if (!election || election.user_id !== parseInt(userId)) {
         return res.status(403).json({ message: 'Access denied or election not found' });
       }
-
-      res.status(200).json(election);
+    
+      // Remove the fields you don't want to send
+      const { user_id, created_at, election_id, ...electionDetails } = election;
+  
+      // Fetch the options associated with the election
+      const options = await Election.getElectionById(electionId);
+  
+      // Respond with both election details and options
+      res.status(200).json({
+        election: {
+          ...electionDetails, // Send all election data except user_id, created_at, and election_id
+        },
+        options,
+      });
     } catch (error) {
       console.error('Error fetching election:', error);
       res.status(500).json({ message: 'Failed to fetch election', error });
     }
-  },
+  },  
 
   // Create a new election
   createElection: async (req, res) => {
