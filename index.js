@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const userRoutes = require('./src/routes/userRoutes');
 const electionRoutes = require('./src/routes/electionRoutes');
+const voterRoutes = require('./src/routes/voterRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/elections', electionRoutes);
+app.use('/api/voters', voterRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
