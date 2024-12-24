@@ -44,7 +44,7 @@ const ElectionController = {
       console.error('Error fetching election:', error);
       res.status(500).json({ message: 'Failed to fetch election', error });
     }
-  },  
+  },
 
   // Create a new election
   createElection: async (req, res) => {

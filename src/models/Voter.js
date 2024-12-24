@@ -22,6 +22,36 @@ const Voter = {
     return db.query(query, [election_id]).then(([rows]) => rows);
   },
 
+  // Get all elections the user has successfully joined
+  getJoinedElectionsByUser: async (user_id) => {
+    const query = `
+      SELECT v.voter_id, e.election_id, e.title, e.description
+      FROM voter v
+      INNER JOIN election e ON v.election_id = e.election_id
+      WHERE v.user_id = ? AND v.status = 'Accepted'
+    `;
+    return db.query(query, [user_id]).then(([rows]) => rows);
+  },
+
+  getJoinedElectionDetail: async (userId, electionId) => {
+    const query = `
+      SELECT 
+        e.election_id, 
+        e.title, 
+        e.description, 
+        e.start_datetime, 
+        e.end_datetime, 
+        v.status, 
+        CONCAT(u.first_name, ' ', u.last_name) AS organizer_name
+      FROM voter v
+      INNER JOIN election e ON v.election_id = e.election_id
+      INNER JOIN user u ON e.user_id = u.user_id
+      WHERE v.user_id = ? AND v.election_id = ? AND v.status = 'Accepted'
+    `;
+    const [results] = await db.query(query, [userId, electionId]);
+    return results[0]; // Return the first result (or undefined if none)
+  },
+
   // Get all pending voters for a specific election
   getVoterRequestsByElection: async (election_id) => {
     const query = `

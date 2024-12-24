@@ -61,6 +61,36 @@ const VoterController = {
     }
   },
 
+  getJoinedElections: async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      const joinedElections = await Voter.getJoinedElectionsByUser(userId);
+      res.status(200).json({ joinedElections });
+    } catch (error) {
+      console.error('Error fetching joined elections:', error);
+      res.status(500).json({ message: 'Failed to fetch joined elections', error });
+    }
+  },
+
+  // Get details of a specific joined election
+  getJoinedElectionDetail: async (req, res) => {
+    const { userId, electionId } = req.params;
+
+    try {
+      const election = await Voter.getJoinedElectionDetail(userId, electionId);
+
+      if (election) {
+        res.status(200).json(election);
+      } else {
+        res.status(404).json({ message: "Election not found or you are not a participant." });
+      }
+    } catch (error) {
+      console.error("Error fetching joined election details:", error);
+      res.status(500).json({ message: "Failed to fetch election details.", error });
+    }
+  },
+
   // Approve a voter request
   approveRequest: async (req, res) => {
     const { userId, electionId, voterId } = req.params;

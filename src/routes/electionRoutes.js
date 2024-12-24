@@ -8,11 +8,11 @@ router.get('/:userId/election', ElectionController.getAllElections);
 // Get a specific election by ID
 router.get('/:userId/:electionId', ElectionController.getElectionById);
 
-// Create a new election
-router.post('/:userId/election', ElectionController.createElection);
-
 // Check if an election code is unique
 router.get('/check-code/:election_code', ElectionController.checkElectionCode);
+
+// Create a new election
+router.post('/:userId/election', ElectionController.createElection);
 
 // Update an election
 router.put('/:userId/:electionId', ElectionController.updateElection);

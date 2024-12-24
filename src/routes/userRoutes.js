@@ -1,8 +1,6 @@
 const express = require('express');
 const UserController = require('../controllers/userController');
 const router = express.Router();
-const speakeasy = require("speakeasy");
-const qrcode = require("qrcode");
 
 // Route for login
 router.post('/login', UserController.login);
