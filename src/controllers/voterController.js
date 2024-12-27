@@ -1,5 +1,5 @@
-const Voter = require('../models/Voter');
-const Election = require('../models/Election');
+import Voter from '../models/Voter.js';
+import Election from '../models/Election.js';
 
 const VoterController = {
   // Create a new voter participation request
@@ -45,6 +45,51 @@ const VoterController = {
     } catch (error) {
       console.error('Error fetching voter requests:', error);
       res.status(500).json({ message: 'Failed to fetch requests', error });
+    }
+  },
+
+  // Fetch voting limitation details for a specific voter
+  getLimitation: async (req, res) => {
+    const { voterId } = req.params;
+  
+    if (!voterId) {
+      return res.status(400).json({ message: "Voter ID is required." });
+    }
+  
+    try {
+      const limitation = await Voter.getVotingLimitation(voterId);
+  
+      if (limitation) {
+        const currentTime = new Date();
+        const startTime = new Date(limitation.start_datetime);
+        const endTime = new Date(limitation.end_datetime);
+  
+        // Check voting conditions
+        const isEligibleToVote = 
+          limitation.has_voted === 0 && 
+          currentTime >= startTime && 
+          currentTime <= endTime;
+  
+        return res.status(200).json({
+          message: "Voting limitation fetched successfully.",
+          data: {
+            has_voted: limitation.has_voted,
+            start_datetime: limitation.start_datetime,
+            end_datetime: limitation.end_datetime,
+            isEligibleToVote, // Include eligibility in response
+          },
+        });
+      } else {
+        return res.status(404).json({
+          message: "Voter not found or voter is not associated with any election.",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching voting limitation:", error);
+      return res.status(500).json({
+        message: "Failed to fetch voting limitation. Please try again later.",
+        error: error.message,
+      });
     }
   },
 
@@ -130,4 +175,4 @@ const VoterController = {
   },
 };
 
-module.exports = VoterController;
+export default VoterController;

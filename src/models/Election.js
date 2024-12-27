@@ -1,6 +1,5 @@
-const db = require('../config/db');
+import db from '../config/db.js';
 
-// Define an Election model with functions to interact with the database
 const Election = {
   // Get all elections created by a specific user
   getAllElectionsByUser: async (userId) => {
@@ -38,17 +37,14 @@ const Election = {
 
   // Update an election by ID (partial updates allowed)
   updateElection: async (electionId, updates) => {
-    // Build the dynamic query for updates
     const setClauses = [];
     const values = [];
 
-    // Iterate through the updates object to dynamically build query
     for (const [key, value] of Object.entries(updates)) {
       setClauses.push(`${key} = ?`);
-      values.push(key === 'options' ? JSON.stringify(value) : value); // Convert JSON to string for 'options'
+      values.push(key === 'options' ? JSON.stringify(value) : value);
     }
 
-    // Add the electionId at the end of values array
     values.push(electionId);
 
     const query = `
@@ -67,4 +63,4 @@ const Election = {
   },
 };
 
-module.exports = Election;
+export default Election;

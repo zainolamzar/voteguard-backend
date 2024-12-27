@@ -1,5 +1,6 @@
-const express = require('express');
-const ElectionController = require('../controllers/electionController');
+import express from 'express';
+import ElectionController from '../controllers/electionController.js';
+
 const router = express.Router();
 
 // Get all elections for a specific user
@@ -20,4 +21,4 @@ router.put('/:userId/:electionId', ElectionController.updateElection);
 // Delete an election
 router.delete('/:userId/:electionId', ElectionController.deleteElection);
 
-module.exports = router;
+export default router;

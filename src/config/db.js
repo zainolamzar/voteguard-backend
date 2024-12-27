@@ -1,5 +1,7 @@
-const mysql = require('mysql2');
-require('dotenv').config();
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -16,4 +18,4 @@ const pool = mysql.createPool({
 // Promisify the pool to use async/await
 const promisePool = pool.promise();
 
-module.exports = promisePool;
+export default promisePool;

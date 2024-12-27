@@ -1,13 +1,12 @@
-const db = require("../config/db");
+import db from '../config/db.js';
 
 const Ballot = {
-  // Create a new ballot entry
-  create: async (electionId, encryptedVote) => {
+  create: async (electionId, vote) => {
     const query = `
       INSERT INTO ballot (election_id, encrypted_vote)
       VALUES (?, ?)
     `;
-    const [result] = await db.query(query, [electionId, encryptedVote]);
+    const [result] = await db.query(query, [electionId, vote]);
     return result.insertId;
   },
 
@@ -33,16 +32,16 @@ const Ballot = {
         AND v.status = 'Accepted'
     `;
     const [rows] = await db.query(query, [voterId, electionId]);
-  
+
     if (rows.length > 0) {
       // Ensure options is parsed if stored as a string
-      if (typeof rows[0].options === "string") {
+      if (typeof rows[0].options === 'string') {
         rows[0].options = JSON.parse(rows[0].options);  // Parse if it's a string
       }
     }
-  
+
     return rows; // Return election details along with options
   },
 };
 
-module.exports = Ballot;
+export default Ballot;

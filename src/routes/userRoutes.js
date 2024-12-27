@@ -1,5 +1,6 @@
-const express = require('express');
-const UserController = require('../controllers/userController');
+import express from 'express';
+import UserController from '../controllers/userController.js';
+
 const router = express.Router();
 
 // Route for login
@@ -17,4 +18,4 @@ router.get("/:userId/generate-qr", UserController.generateQRCode);
 // Route for OTP verification
 router.post("/:userId/verify-otp", UserController.verifyOtp);
 
-module.exports = router;
+export default router;

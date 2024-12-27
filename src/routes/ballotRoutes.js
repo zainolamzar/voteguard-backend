@@ -1,5 +1,5 @@
-const express = require("express");
-const BallotController = require("../controllers/ballotController");
+import express from 'express';
+import BallotController from '../controllers/ballotController.js';
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/:voterId/:electionId/options', BallotController.getOptions);
 
 // Route to create a new ballot
-router.post("/submit", BallotController.createBallot);
+router.post('/submit/:voterId/:electionId', BallotController.createBallot);
 
-module.exports = router;
+export default router;

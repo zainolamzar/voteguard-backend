@@ -1,4 +1,4 @@
-const Election = require('../models/Election');
+import Election from '../models/Election.js';
 
 const ElectionController = {
   // Get all elections for a specific user
@@ -19,24 +19,19 @@ const ElectionController = {
     const { userId, electionId } = req.params;
   
     try {
-      // Fetch the election by ID including all relevant data
       const election = await Election.getElectionById(electionId);
       
-      // Check if the election exists and belongs to the user
       if (!election || election.user_id !== parseInt(userId)) {
         return res.status(403).json({ message: 'Access denied or election not found' });
       }
-    
-      // Remove the fields you don't want to send
+
       const { user_id, created_at, election_id, ...electionDetails } = election;
   
-      // Fetch the options associated with the election
       const options = await Election.getElectionById(electionId);
   
-      // Respond with both election details and options
       res.status(200).json({
         election: {
-          ...electionDetails, // Send all election data except user_id, created_at, and election_id
+          ...electionDetails,
         },
         options,
       });
@@ -134,4 +129,4 @@ const ElectionController = {
   },
 };
 
-module.exports = ElectionController;
+export default ElectionController;

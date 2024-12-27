@@ -1,4 +1,4 @@
-const db = require('../config/db');
+import db from '../config/db.js';
 
 // Define a User model with functions to interact with the database
 const User = {
@@ -56,4 +56,4 @@ const User = {
   },
 };
 
-module.exports = User;
+export default User;

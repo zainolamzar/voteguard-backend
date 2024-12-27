@@ -1,4 +1,4 @@
-const db = require('../config/db');
+import db from '../config/db.js';
 
 // Define a Voter model with functions to interact with the database
 const Voter = {
@@ -63,24 +63,48 @@ const Voter = {
     return db.query(query, [election_id]).then(([rows]) => rows);
   },
 
-  // Check if a voter request already exists
-  checkRequestExists: async (user_id, election_id) => {
+  // Get the voting limitation for a specific voter
+  getVotingLimitation: async (voter_id) => {
     const query = `
-      SELECT COUNT(*) AS count FROM voter
-      WHERE user_id = ? AND election_id = ?
+      SELECT e.start_datetime, e.end_datetime, v.has_voted
+      FROM voter v
+      INNER JOIN election e ON v.election_id = e.election_id
+      WHERE v.voter_id = ?
     `;
-    return db.query(query, [user_id, election_id]).then(([rows]) => rows[0].count > 0);
+    const [rows] = await db.query(query, [voter_id]);
+    return rows[0];
   },
 
-  // Update the status of a voter request
+  // Update the status of a voter (Accept/Reject)
   updateVoterStatus: async (voter_id, status) => {
     const query = `
-      UPDATE voter
-      SET status = ?
+      UPDATE voter 
+      SET status = ? 
       WHERE voter_id = ?
     `;
     return db.query(query, [status, voter_id]).then(([result]) => result.affectedRows > 0);
   },
+
+  updateVoterHasVoted: async (voterId, hasVoted) => {
+    const query = `
+      UPDATE voter
+      SET has_voted = ?
+      WHERE voter_id = ?
+    `;
+
+    try {
+      const [result] = await db.query(query, [hasVoted, voterId]);
+      
+      if (result.affectedRows > 0) {
+        return true; // Successfully updated
+      }
+      
+      return false; // No rows were updated
+    } catch (error) {
+      console.error('Error updating has_voted:', error);
+      throw error;
+    }
+  },
 };
 
-module.exports = Voter;
+export default Voter;

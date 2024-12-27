@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const speakeasy = require("speakeasy");
-const qrcode = require("qrcode");
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
+import speakeasy from 'speakeasy';
+import qrcode from 'qrcode';
 
 const UserController = {
   // Login logic
@@ -136,4 +136,4 @@ const UserController = {
   },
 };
 
-module.exports = UserController;
+export default UserController;

@@ -1,5 +1,6 @@
-const express = require('express');
-const VoterController = require('../controllers/voterController');
+import express from 'express';
+import VoterController from '../controllers/voterController.js';
+
 const router = express.Router();
 
 // Request participation in an election
@@ -17,10 +18,13 @@ router.get('/:userId/joined-elections', VoterController.getJoinedElections);
 // Get details of a specific election the user has joined
 router.get('/:userId/joined-elections/:electionId', VoterController.getJoinedElectionDetail);
 
+// Route to get voting limitation for a specific voter
+router.get("/:voterId/limitation", VoterController.getLimitation);
+
 // Update the status of a voter request to Accepted
 router.put("/:userId/requests/:electionId/approve/:voterId", VoterController.approveRequest);
 
 // Update the status of a voter request to Rejected
 router.put("/:userId/requests/:electionId/reject/:voterId", VoterController.rejectRequest);
 
-module.exports = router;
+export default router;
