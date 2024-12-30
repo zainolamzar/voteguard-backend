@@ -1,12 +1,12 @@
 import db from '../config/db.js';
 
 const Ballot = {
-  create: async (electionId, vote) => {
+  create: async (electionId, encryptedVote) => {
     const query = `
       INSERT INTO ballot (election_id, encrypted_vote)
       VALUES (?, ?)
     `;
-    const [result] = await db.query(query, [electionId, vote]);
+    const [result] = await db.query(query, [electionId, encryptedVote]);
     return result.insertId;
   },
 
@@ -41,6 +41,27 @@ const Ballot = {
     }
 
     return rows; // Return election details along with options
+  },
+
+  // Fetch all ballots for a specific election
+  getAllBallotByElection: async (electionId) => {
+    const query = `
+      SELECT * FROM ballot
+      WHERE election_id = ?
+    `;
+    const [rows] = await db.query(query, [electionId]);
+    return rows; // Return all the rows (ballots) for the election
+  },
+
+  // Fetch the total count of submitted ballots for a specific election
+  getCountBallotByElection: async (electionId) => {
+    const query = `
+      SELECT COUNT(*) AS total_ballots
+      FROM ballot
+      WHERE election_id = ?
+    `;
+    const [rows] = await db.query(query, [electionId]);
+    return rows[0]?.total_ballots || 0; // Return the total count, default to 0 if no rows
   },
 };
 

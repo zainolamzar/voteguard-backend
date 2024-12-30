@@ -16,7 +16,17 @@ const Election = {
   // Get election by code
   getElectionByCode: async (electionCode) => {
     const query = "SELECT * FROM election WHERE election_code = ?";
+    
     return db.query(query, [electionCode]).then(([rows]) => rows[0]);
+  },
+
+  getOptionsByElection: async (electionId) => {
+    const query = `
+      SELECT options FROM election
+      WHERE election_id = ?
+    `;
+
+    return db.query(query, [electionId]).then(([rows]) => rows[0]);
   },
 
   // Create a new election
