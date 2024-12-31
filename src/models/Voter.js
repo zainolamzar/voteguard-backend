@@ -25,7 +25,8 @@ const Voter = {
   // Get all elections the user has successfully joined
   getJoinedElectionsByUser: async (user_id) => {
     const query = `
-      SELECT v.voter_id, e.election_id, e.title, e.description
+      SELECT v.voter_id, e.election_id, e.title, e.description, 
+      e.start_datetime, e.end_datetime
       FROM voter v
       INNER JOIN election e ON v.election_id = e.election_id
       WHERE v.user_id = ? AND v.status = 'Accepted'
