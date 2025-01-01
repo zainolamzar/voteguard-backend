@@ -89,8 +89,7 @@ const UserController = {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
-      // Generate a new secret for the user
+      
       const secret = speakeasy.generateSecret({ length: 20 });
       const otpauthUrl = secret.otpauth_url;
 
@@ -108,26 +107,27 @@ const UserController = {
   },
 
   verifyOtp: async (req, res) => {
-    const { userId, otp } = req.body;
-
+    const { userId } = req.params; // Extract userId from URL params
+    const { otp } = req.body; // Extract OTP from request body
+  
     try {
-      // Fetch the user's OTP secret from the database
       const user = await User.getUserById(userId);
       if (!user || !user.otp_secret) {
         return res.status(400).json({ message: "User not found or OTP secret not set." });
       }
-
-      // Verify the OTP using speakeasy
+  
+      // Verify the OTP
       const verified = speakeasy.totp.verify({
         secret: user.otp_secret,
         encoding: "base32",
         token: otp,
+        window: 1, // Allow for time discrepancies
       });
-
+  
       if (!verified) {
         return res.status(400).json({ message: "Invalid OTP. Please try again." });
       }
-
+  
       res.status(200).json({ message: "OTP verified successfully!" });
     } catch (error) {
       console.error("Error during OTP verification:", error);
