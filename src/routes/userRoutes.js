@@ -1,5 +1,5 @@
-const express = require('express');
-const UserController = require('../controllers/userController');
+import express from 'express';
+import UserController from '../controllers/userController.js';
 
 const router = express.Router();
 
@@ -9,4 +9,13 @@ router.post('/login', UserController.login);
 // Route for register
 router.post('/register', UserController.register);
 
-module.exports = router;
+// Route for setting up OTP secret
+router.post('/setup-otp', UserController.setupOtp);
+
+// Route to generate QR code for a specific user
+router.get("/:userId/generate-qr", UserController.generateQRCode);
+
+// Route for OTP verification
+router.post("/:userId/verify-otp", UserController.verifyOtp);
+
+export default router;
