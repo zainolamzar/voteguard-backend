@@ -6,29 +6,48 @@ const VoterController = {
   requestParticipation: async (req, res) => {
     const { userId } = req.params;
     const { election_code } = req.body;
-
+  
     try {
       // Find the election by election code
       const election = await Election.getElectionByCode(election_code);
-
+  
       if (!election) {
-        return res.status(404).json({ message: "Election not found. Please check the code and try again." });
+        return res
+          .status(404)
+          .json({ message: "Election not found. Please check the code and try again." });
       }
-
+  
       const electionId = election.election_id;
-
+  
       // Check if the user is the admin of the election
       if (election.user_id === parseInt(userId)) {
-        return res.status(403).json({ message: "You cannot request participation in your own election." });
+        return res
+          .status(403)
+          .json({ message: "You cannot request participation in your own election." });
       }
-
+  
+      // Check if a pending request already exists for this user and election
+      const existingRequests = await Voter.getVoterRequestsByElection(electionId);
+      const userHasPendingRequest = existingRequests.some(
+        (request) => request.user_id === parseInt(userId)
+      );
+  
+      if (userHasPendingRequest) {
+        return res
+          .status(409)
+          .json({ message: "You have already sent a request for this election." });
+      }
+  
       // Insert the voter request into the database
       const voterRequest = await Voter.createVoterRequest({
         user_id: parseInt(userId),
         election_id: electionId,
       });
-
-      res.status(201).json({ message: "Participation request sent successfully.", voterRequest });
+  
+      res.status(201).json({
+        message: "Participation request sent successfully.",
+        voterRequest,
+      });
     } catch (error) {
       console.error("Error requesting participation:", error);
       res.status(500).json({ message: "Failed to request participation.", error });
@@ -95,6 +114,19 @@ const VoterController = {
 
   // Get all accepted voters for an election
   getAcceptedVoters: async (req, res) => {
+    const { electionId } = req.params;
+
+    try {
+      const acceptedVoters = await Voter.getAcceptedVotersByElection(electionId);
+      res.status(200).json({ acceptedVoters });
+    } catch (error) {
+      console.error('Error fetching accepted voters:', error);
+      res.status(500).json({ message: 'Failed to fetch accepted voters', error });
+    }
+  },
+
+  // Get all accepted voters for an election
+  getListVoters: async (req, res) => {
     const { electionId } = req.params;
 
     try {

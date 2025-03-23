@@ -9,6 +9,9 @@ router.post('/login', UserController.login);
 // Route for register
 router.post('/register', UserController.register);
 
+// Route to fetch user data
+router.get('/:userId', UserController.fetchUserData);
+
 // Route for setting up OTP secret
 router.post('/setup-otp', UserController.setupOtp);
 

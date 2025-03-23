@@ -126,25 +126,28 @@ const ResultController = {
       });
   
       // Check for a draw
-      const firstOptionPercentage = results[0].percentage.toFixed(2);
-      const isDraw = results.every((option) => option.percentage.toFixed(2) === firstOptionPercentage);
-  
-      if (isDraw) {
-        const drawPercentage = Number(firstOptionPercentage);
-  
+      const highestPercentage = Math.max(...results.map((option) => option.percentage));
+      const optionsWithHighestPercentage = results.filter(
+        (option) => option.percentage === highestPercentage
+      );
+
+      // If more than one option has the highest percentage, it's a draw
+      if (optionsWithHighestPercentage.length > 1) {
+        const drawPercentage = highestPercentage.toFixed(2);
+
         // Save the draw result in the database
         const resultId = await Result.createResult(
           electionId,
           {
             id: 0,
-            name: "None",
-            description: "The result is draw",
+            name: "No one won",
+            description: "The result is a draw",
           },
           0, // Total votes for the winner
-          drawPercentage.toFixed(2), // Winning percentage
+          drawPercentage, // Winning percentage
           ballots.length // Total participation
         );
-  
+
         return res.status(200).json({
           message: "The election result is a draw.",
           results: results.map((result) => ({
@@ -156,10 +159,10 @@ const ResultController = {
           participation: ballots.length,
           winner: {
             id: 0,
-            name: "None",
-            description: "The result is draw",
+            name: "No one won",
+            description: "The result is a draw",
             votes: "0",
-            percentage: drawPercentage.toFixed(2),
+            percentage: drawPercentage,
           },
           resultId,
         });

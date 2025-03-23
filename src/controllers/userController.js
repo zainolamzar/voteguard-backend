@@ -58,6 +58,34 @@ const UserController = {
     }
   },
 
+  fetchUserData: async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      // Fetch user data using the User model
+      const user = await User.getUserById(userId);
+  
+      if (user) {
+        res.status(200).json({
+          success: true,
+          message: 'User data retrieved successfully.',
+          data: user,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: 'User not found.',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      res.status(500).json({
+        success: false,
+        message: 'An error occurred while retrieving user data.',
+      });
+    }
+  },
+
   // Update OTP secret for a user
   setupOtp: async (req, res) => {
     const { userId, otpSecret } = req.body;

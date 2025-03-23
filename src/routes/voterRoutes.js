@@ -12,6 +12,9 @@ router.get('/:userId/requests/:electionId', VoterController.getRequestsByElectio
 // Get all accepted voters for a specific election
 router.get('/:userId/accepted-voters/:electionId', VoterController.getAcceptedVoters);
 
+// Get all accepted voters for a specific election
+router.get('/list-voters/:electionId', VoterController.getListVoters);
+
 // Get all elections the user has joined
 router.get('/:userId/joined-elections', VoterController.getJoinedElections);
 
